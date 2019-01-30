@@ -1,7 +1,9 @@
 package com.mishas.stuff.mta;
 
+import com.mishas.stuff.common.utils.JsonValidator;
 import com.mishas.stuff.mta.controller.AccountController;
 import com.mishas.stuff.common.controller.ExceptionHandlerController;
+import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.service.impl.AccountService;
 
 
@@ -18,7 +20,7 @@ public class MoneyTransferApi {
         port(8080);
 
         // controller
-        AccountController accountController = new AccountController(new AccountService());
+        AccountController accountController = new AccountController(new AccountService(), new JsonValidator());
         ExceptionHandlerController exceptionHandlerControler = new ExceptionHandlerController();
 
         internalServerError((req, res) -> {

@@ -1,8 +1,9 @@
 package com.mishas.stuff.mta.persistence.model;
 
 import com.mishas.stuff.common.persistence.IEntity;
+import com.mishas.stuff.common.persistence.IValidDto;
 
-public class Transaction implements IEntity {
+public class Transaction implements IEntity, IValidDto {
 
     @Override
     public Long getId() {
@@ -12,5 +13,10 @@ public class Transaction implements IEntity {
     @Override
     public void setId(Long id) {
 
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
     }
 }

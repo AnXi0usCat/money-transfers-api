@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public class AccountService implements IAccountService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
-    private final static AccountRepository accountRepository = new AccountRepository();
+    private final AccountRepository accountRepository = new AccountRepository();
 
     @Override
     public Account get(long id) {

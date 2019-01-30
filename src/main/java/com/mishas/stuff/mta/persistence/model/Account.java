@@ -1,6 +1,7 @@
 package com.mishas.stuff.mta.persistence.model;
 
 import com.mishas.stuff.common.persistence.IEntity;
+import com.mishas.stuff.common.persistence.IValidDto;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -8,7 +9,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "account")
-public class Account implements IEntity {
+public class Account implements IEntity, IValidDto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,16 +31,10 @@ public class Account implements IEntity {
         super();
     }
 
-    public Account(String currency) {
-        this.currency = currency;
-        this.balance = new BigDecimal(0);
-        this.reservedBalance = new BigDecimal(0);
-    }
-
-    public Account(String currency, BigDecimal balance) {
+    public Account(String currency, BigDecimal balance, BigDecimal reservedBalance) {
         this.currency = currency;
         this.balance = balance;
-        this.reservedBalance = new BigDecimal(0);
+        this.reservedBalance = reservedBalance;
     }
 
     public Account(Long id, String currency, BigDecimal balance, BigDecimal reservedBalance) {
@@ -93,5 +88,16 @@ public class Account implements IEntity {
                 ", balance=" + balance +
                 ", reservedBalance=" + reservedBalance +
                 '}';
+    }
+
+    // api - other
+
+    /**
+     * checks if json payload was valid
+     * @return bolean
+     */
+    @Override
+    public boolean isValid() {
+        return this.currency != null && this.balance != null && this.reservedBalance != null;
     }
 }

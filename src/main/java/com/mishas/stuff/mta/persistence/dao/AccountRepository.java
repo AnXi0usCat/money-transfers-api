@@ -5,6 +5,7 @@ import com.mishas.stuff.common.service.ICrudService;
 import com.mishas.stuff.common.utils.exception.MyPersistenceException;
 import com.mishas.stuff.mta.persistence.HibernateUtilities;
 import com.mishas.stuff.mta.persistence.model.Account;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
