@@ -26,6 +26,10 @@ public class Transfer implements IEntity {
     @Column(name = "transfered_amount", nullable = false)
     private BigDecimal balance;
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private TransferResult transferResult;
+
     // controller
 
     public Transfer() {
@@ -49,6 +53,14 @@ public class Transfer implements IEntity {
 
     // api
 
+
+    public TransferResult getTransferResult() {
+        return transferResult;
+    }
+
+    public void setTransferResult(TransferResult transferResult) {
+        this.transferResult = transferResult;
+    }
 
     @Override
     public Long getId() {
@@ -100,6 +112,7 @@ public class Transfer implements IEntity {
                 ", destinationAccount=" + destinationAccount +
                 ", currency='" + currency + '\'' +
                 ", balance=" + balance +
+                ", transferResult=" + transferResult +
                 '}';
     }
 }

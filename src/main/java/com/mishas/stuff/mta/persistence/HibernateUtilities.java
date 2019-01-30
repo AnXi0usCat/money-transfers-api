@@ -3,6 +3,7 @@ package com.mishas.stuff.mta.persistence;
 
 import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.persistence.model.Transfer;
+import com.mishas.stuff.mta.persistence.model.TransferResult;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -29,17 +30,18 @@ public class HibernateUtilities {
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
                 settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+                settings.put(Environment.AUTOCOMMIT, false);
                 // pool size
                 settings.put(Environment.C3P0_MIN_SIZE, 10);
                 settings.put(Environment.C3P0_MAX_SIZE, 40);
                 settings.put(Environment.C3P0_TIMEOUT, 1800);
                 settings.put(Environment.C3P0_MAX_STATEMENTS, 80);
 
-                settings.put(Environment.AUTOCOMMIT, false);
                 configuration.setProperties(settings);
                 // entities
                 configuration.addAnnotatedClass(Account.class);
                 configuration.addAnnotatedClass(Transfer.class);
+                configuration.addAnnotatedClass(TransferResult.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();

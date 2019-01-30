@@ -5,7 +5,7 @@ import com.mishas.stuff.common.utils.exceptions.MyPersistenceException;
 import com.mishas.stuff.mta.persistence.HibernateUtilities;
 import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.persistence.model.Transfer;
-import com.mishas.stuff.mta.web.dto.TransferResultDto;
+import com.mishas.stuff.mta.persistence.model.TransferResult;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
@@ -24,13 +24,13 @@ public class AccountRepository extends GenericCrudRepository<Account> {
             return super.get(id) != null ? true : false;
         }
 
-        public TransferResultDto transferFundsBetweenAccounts(Transfer resource) {
+        public TransferResult transferFundsBetweenAccounts(Transfer resource) {
 
             Transaction transaction = null;
             Session session = null;
             Account sourceAccount = null;
             Account destinationAccount = null;
-            TransferResultDto transferResultDto;
+            TransferResult transferResult;
 
             try  {
                 session = HibernateUtilities.getSessionFactory().openSession();
@@ -72,12 +72,12 @@ public class AccountRepository extends GenericCrudRepository<Account> {
                 transaction.commit();
 
                 // create out result object
-                transferResultDto = new TransferResultDto(
-                        sourceAccount.getId(),
+                transferResult = new TransferResult(
                         sourceBalanceAfter,
                         sourceBalanceAfter.add(resource.getBalance()),
                         resource.getBalance(),
-                        sourceAccount.getCurrency()
+                        sourceAccount.getCurrency(),
+                        resource.getCurrency()
                 );
             } catch (HibernateException e) {
                 super.LOGGER.error("Error occurred in the update method, rolling back the transaction: " + e.getLocalizedMessage());
@@ -90,6 +90,6 @@ public class AccountRepository extends GenericCrudRepository<Account> {
             } finally {
                 session.close();
             }
-            return transferResultDto;
+            return transferResult;
         }
 }
