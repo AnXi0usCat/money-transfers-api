@@ -1,6 +1,5 @@
-package com.mishas.stuff.common.service;
+package com.mishas.stuff.common.interfaces;
 
-import java.io.Serializable;
 
 public interface ICrudService<T> {
 

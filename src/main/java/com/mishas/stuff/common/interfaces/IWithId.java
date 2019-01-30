@@ -1,4 +1,4 @@
-package com.mishas.stuff.common.persistence;
+package com.mishas.stuff.common.interfaces;
 
 import java.io.Serializable;
 

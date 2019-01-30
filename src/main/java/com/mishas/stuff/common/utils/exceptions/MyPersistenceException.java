@@ -1,4 +1,4 @@
-package com.mishas.stuff.common.utils.exception;
+package com.mishas.stuff.common.utils.exceptions;
 
 
 public final class MyPersistenceException extends RuntimeException {
