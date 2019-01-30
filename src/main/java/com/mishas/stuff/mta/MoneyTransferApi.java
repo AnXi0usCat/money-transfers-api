@@ -1,8 +1,10 @@
 package com.mishas.stuff.mta;
 
-import com.mishas.stuff.mta.controller.AccountController;
-import com.mishas.stuff.common.controller.ExceptionHandlerController;
+import com.mishas.stuff.mta.web.controller.AccountController;
+import com.mishas.stuff.mta.web.controller.ExceptionHandlerController;
+import com.mishas.stuff.mta.web.controller.TransferController;
 import com.mishas.stuff.mta.service.impl.AccountService;
+import com.mishas.stuff.mta.service.impl.TransferService;
 
 
 import static spark.Spark.internalServerError;
@@ -19,18 +21,8 @@ public class MoneyTransferApi {
 
         // controller
         AccountController accountController = new AccountController(new AccountService());
+        TransferController transferController = new TransferController(new TransferService());
         ExceptionHandlerController exceptionHandlerControler = new ExceptionHandlerController();
-
-        internalServerError((req, res) -> {
-            res.type("application/json");
-            return "{\"message\":\"Custom 500 handling\"}";
-        });
-
-        // Using Route
-        notFound((req, res) -> {
-            res.type("application/json");
-            return "{\"message\":\"Custom 404\"}";
-        });
 
     }
 }

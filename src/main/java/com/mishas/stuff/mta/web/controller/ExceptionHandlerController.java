@@ -1,9 +1,12 @@
-package com.mishas.stuff.common.controller;
+package com.mishas.stuff.mta.web.controller;
 
 import com.google.gson.Gson;
+import com.mishas.stuff.common.interfaces.IController;
 import com.mishas.stuff.common.utils.StandardResponse;
 import com.mishas.stuff.common.utils.StatusResponse;
-import com.mishas.stuff.common.utils.exception.MyPersistenceException;
+import com.mishas.stuff.common.utils.exceptions.MyFundsTransferException;
+import com.mishas.stuff.common.utils.exceptions.MyMissingResourceException;
+import com.mishas.stuff.common.utils.exceptions.MyPersistenceException;
 
 import static spark.Spark.*;
 
@@ -31,7 +34,21 @@ public class ExceptionHandlerController implements IController {
             return "{\"message\":\"Custom 500 handling\"}";
         });
 
+        // custom exceptions mappings
+
         exception(MyPersistenceException.class, (exception, request, response) -> {
+            response.status(500);
+            response.type("application/json");
+            response.body(new Gson().toJson(mapException(exception)));
+        });
+
+        exception(MyMissingResourceException.class, (exception, request, response) -> {
+            response.status(500);
+            response.type("application/json");
+            response.body(new Gson().toJson(mapException(exception)));
+        });
+
+        exception(MyFundsTransferException.class, (exception, request, response) -> {
             response.status(500);
             response.type("application/json");
             response.body(new Gson().toJson(mapException(exception)));
@@ -39,7 +56,8 @@ public class ExceptionHandlerController implements IController {
 
     }
 
-    // get the message from out custom exceptions
+    // utils: get the message from our custom exceptions
+
     private StandardResponse mapException(Throwable ex) {
         final String message = ex.getMessage() == null ? ex.getClass().getSimpleName() : ex.getMessage();
         final String devMessage = ex.getClass().getSimpleName();

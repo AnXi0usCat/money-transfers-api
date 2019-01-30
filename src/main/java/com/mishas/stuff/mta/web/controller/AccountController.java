@@ -1,8 +1,8 @@
-package com.mishas.stuff.mta.controller;
+package com.mishas.stuff.mta.web.controller;
 
 import com.google.gson.Gson;
 
-import com.mishas.stuff.common.controller.IController;
+import com.mishas.stuff.common.interfaces.IController;
 import com.mishas.stuff.common.utils.StandardResponse;
 import com.mishas.stuff.common.utils.StatusResponse;
 import com.mishas.stuff.mta.persistence.model.Account;
@@ -31,7 +31,7 @@ public class AccountController implements IController {
             return new Gson().toJson(
                         new StandardResponse(StatusResponse.SUCCESS,
                                 new Gson().toJsonTree(accountService.get(
-                                         Integer.parseInt(request.params(":id"))
+                                        Long.parseLong(request.params(":id"))
                                 ))
                         )
                 );
@@ -49,11 +49,9 @@ public class AccountController implements IController {
 
         put("/api/v1/accounts/:id", (request, response) -> {
             response.type("application/json");
-            // your callback code
-            response.type("application/json");
             Account toEdit = new Gson().fromJson(request.body(), Account.class);
             Account editedAccount = accountService.update(
-                    Integer.parseInt(request.params(":id")), toEdit);
+                    Long.parseLong(request.params(":id")), toEdit);
 
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS,
@@ -64,13 +62,20 @@ public class AccountController implements IController {
 
         delete("/api/v1/accounts/:id", (request, response) -> {
             response.type("application/json");
-            // your callback code
-            response.type("application/json");
+            response.status(HttpStatus.OK_200);
             accountService.delete(
                     Integer.parseInt(request.params(":id"))
             );
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS, "DELETED", null));
+        });
+
+        head("/api/v1/accounts/:id", (request, response) -> {
+            int status = accountService.accountExists(Long.parseLong(request.params(":id"))) == true ?
+                    HttpStatus.OK_200 :
+                    HttpStatus.NOT_FOUND_404;
+            response.status(status);
+            return response;
         });
 
     }

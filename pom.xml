@@ -52,14 +52,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- has exception utils-->
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.0</version>
-        </dependency>
-
 
         <!--  make it work with java 11 java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException -->
         <dependency>

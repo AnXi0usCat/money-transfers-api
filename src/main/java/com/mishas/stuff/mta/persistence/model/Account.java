@@ -1,6 +1,6 @@
 package com.mishas.stuff.mta.persistence.model;
 
-import com.mishas.stuff.common.persistence.IEntity;
+import com.mishas.stuff.common.interfaces.IEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
