@@ -4,6 +4,7 @@ import com.mishas.stuff.common.interfaces.IEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "transfer")
@@ -25,6 +26,10 @@ public class Transfer implements IEntity {
 
     @Column(name = "transfered_amount", nullable = false)
     private BigDecimal balance;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "transfer_result_id", referencedColumnName = "id")
+    private TransferResult transferResult;
 
     // controller
 
@@ -49,6 +54,14 @@ public class Transfer implements IEntity {
 
     // api
 
+
+    public TransferResult getTransferResult() {
+        return transferResult;
+    }
+
+    public void setTransferResult(TransferResult transferResult) {
+        this.transferResult = transferResult;
+    }
 
     @Override
     public Long getId() {
@@ -100,6 +113,7 @@ public class Transfer implements IEntity {
                 ", destinationAccount=" + destinationAccount +
                 ", currency='" + currency + '\'' +
                 ", balance=" + balance +
+                ", transferResult=" + transferResult +
                 '}';
     }
 }

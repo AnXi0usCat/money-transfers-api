@@ -9,6 +9,8 @@ import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 public abstract class GenericCrudRepository<T extends IEntity> {
 
 
@@ -19,15 +21,16 @@ public abstract class GenericCrudRepository<T extends IEntity> {
         this.clazz = clazz;
     }
 
-    public void create(T resource) {
+    public Serializable create(T resource) {
 
         Transaction transaction = null;
         Session session = null;
+        Serializable primaryKey = null;
         try  {
             session = HibernateUtilities.getSessionFactory().openSession();
             // start a transaction
             transaction = session.beginTransaction();
-            session.save(resource);
+            primaryKey = session.save(resource);
             transaction.commit();
         } catch (Exception e) {
             LOGGER.error("Error occurred in the create method, rolling back the transaction: " + e.getLocalizedMessage());
@@ -40,7 +43,7 @@ public abstract class GenericCrudRepository<T extends IEntity> {
         } finally {
             session.close();
         }
-
+        return primaryKey;
     }
 
     // could return null if account doesnt exist

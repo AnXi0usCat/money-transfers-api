@@ -25,6 +25,7 @@ public class TransferController  implements IController {
         get("/api/v1/transfers/:id", (request, response) -> {
             response.type("application/json");
             response.status(HttpStatus.OK_200);
+            Transfer transfer = transferService.get(Integer.parseInt(request.params(":id")));
 
             // construct a response object
             return new Gson().toJson(

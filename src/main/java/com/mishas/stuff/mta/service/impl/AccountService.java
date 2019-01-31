@@ -5,7 +5,7 @@ import com.mishas.stuff.mta.persistence.dao.AccountRepository;
 import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.persistence.model.Transfer;
 import com.mishas.stuff.mta.service.IAccountService;
-import com.mishas.stuff.mta.web.dto.TransferResultDto;
+import com.mishas.stuff.mta.persistence.model.TransferResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public TransferResultDto transferFundsBetweenAccounts(Transfer resource) {
+    public TransferResult transferFundsBetweenAccounts(Transfer resource) {
         long sourceAccount = resource.getSourceAccount();
         long destinationAccount = resource.getDestinationAccount();
 
