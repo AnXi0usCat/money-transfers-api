@@ -50,5 +50,14 @@ public class TransferController  implements IController {
                     .toJson(new StandardResponse(StatusResponse.SUCCESS,   "CREATED", null));
         });
 
+        head("/api/v1/accounts/:id", (request, response) -> {
+            long param = inputValidator.validatePathParam(request.params(":id"));
+            int status = transferService.transferExists(param) == true ?
+                    HttpStatus.OK_200 :
+                    HttpStatus.NOT_FOUND_404;
+            response.status(status);
+            return response;
+        });
+
     }
 }

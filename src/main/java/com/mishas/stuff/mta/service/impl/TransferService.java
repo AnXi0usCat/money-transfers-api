@@ -20,6 +20,9 @@ public class TransferService implements ITransferService {
     @Override
     public TransferDto get(long id) {
         LOGGER.info("getting resource with ID: " + id);
+        if (transferExists(id)){
+            return new TransferDto(transferRepository.get(id));
+        }
         return new TransferDto(transferRepository.get(id));
     }
 
@@ -30,5 +33,10 @@ public class TransferService implements ITransferService {
         TransferResult transferResult = accountService.transferFundsBetweenAccounts(entity);
         entity.setTransferResult(transferResult);
         transferRepository.create(entity);
+    }
+
+    @Override
+    public boolean transferExists(long id) {
+        return transferRepository.transferExists(id);
     }
 }

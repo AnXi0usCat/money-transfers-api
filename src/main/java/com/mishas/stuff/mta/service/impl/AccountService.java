@@ -39,7 +39,6 @@ public class AccountService implements IAccountService {
             return new AccountDto(entity);
         }
         return new AccountDto();
-
     }
 
     @Override

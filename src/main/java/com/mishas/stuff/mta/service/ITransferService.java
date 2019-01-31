@@ -5,6 +5,8 @@ import com.mishas.stuff.mta.web.dto.TransferDto;
 
 public interface ITransferService extends ICrudService<TransferDto> {
 
+    public boolean transferExists(long id);
+
     // we don't need these methods so default implementation will do
 
     default TransferDto update(long id, TransferDto resource) {
