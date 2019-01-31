@@ -21,7 +21,7 @@ public class AccountRepository extends GenericCrudRepository<Account> {
         }
 
         public boolean accountExists(long id) {
-            return super.get(id) != null ? true : false;
+            return super.get(id) != null;
         }
 
         public TransferResult transferFundsBetweenAccounts(Transfer resource) {

@@ -23,7 +23,7 @@ public class TransferService implements ITransferService {
         if (transferExists(id)){
             return new TransferDto(transferRepository.get(id));
         }
-        return new TransferDto(transferRepository.get(id));
+        return new TransferDto();
     }
 
     @Override

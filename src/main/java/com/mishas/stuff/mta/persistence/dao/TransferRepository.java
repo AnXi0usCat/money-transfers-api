@@ -9,6 +9,6 @@ public class TransferRepository extends GenericCrudRepository<Transfer> {
     }
 
     public boolean transferExists(long id) {
-        return super.get(id) != null ? true : false;
+        return super.get(id) != null;
     }
 }
