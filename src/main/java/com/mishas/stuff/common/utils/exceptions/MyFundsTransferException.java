@@ -1,6 +1,6 @@
 package com.mishas.stuff.common.utils.exceptions;
 
-public class MyFundsTransferException extends RuntimeException {
+public final class MyFundsTransferException extends RuntimeException {
 
     public MyFundsTransferException() {
         super();

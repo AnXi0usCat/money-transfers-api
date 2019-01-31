@@ -5,8 +5,8 @@ import com.google.gson.Gson;
 import com.mishas.stuff.common.interfaces.IController;
 import com.mishas.stuff.common.utils.StandardResponse;
 import com.mishas.stuff.common.utils.StatusResponse;
-import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.service.IAccountService;
+import com.mishas.stuff.mta.web.dto.AccountDto;
 import org.eclipse.jetty.http.HttpStatus;
 
 import static spark.Spark.*;
@@ -41,7 +41,7 @@ public class AccountController implements IController {
             response.type("application/json");
             response.status(HttpStatus.CREATED_201);
 
-            Account resource = new Gson().fromJson(request.body(), Account.class);
+            AccountDto resource = new Gson().fromJson(request.body(), AccountDto.class);
             accountService.create(resource);
             return new Gson()
                     .toJson(new StandardResponse(StatusResponse.SUCCESS,   "CREATED", null));
@@ -49,8 +49,8 @@ public class AccountController implements IController {
 
         put("/api/v1/accounts/:id", (request, response) -> {
             response.type("application/json");
-            Account toEdit = new Gson().fromJson(request.body(), Account.class);
-            Account editedAccount = accountService.update(
+            AccountDto toEdit = new Gson().fromJson(request.body(), AccountDto.class);
+            AccountDto editedAccount = accountService.update(
                     Long.parseLong(request.params(":id")), toEdit);
 
             return new Gson().toJson(
