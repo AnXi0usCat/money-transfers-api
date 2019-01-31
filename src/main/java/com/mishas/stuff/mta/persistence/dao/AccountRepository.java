@@ -48,7 +48,6 @@ public class AccountRepository extends GenericCrudRepository<Account> {
                             + destinationAccount.getCurrency() + " Transfer: " + resource.getCurrency());
                     throw new MyFundsTransferException("Mismatch in currencies between Accounts or the transferred amount, " +
                             "cannot transfer funds. Check logs for details");
-
                 }
 
                 BigDecimal sourceBalanceAfter = sourceAccount.getBalance().subtract(resource.getBalance());

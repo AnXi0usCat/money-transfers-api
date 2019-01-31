@@ -4,6 +4,7 @@ import com.mishas.stuff.common.interfaces.IEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "transfer")
@@ -26,8 +27,8 @@ public class Transfer implements IEntity {
     @Column(name = "transfered_amount", nullable = false)
     private BigDecimal balance;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "transfer_result_id", referencedColumnName = "id")
     private TransferResult transferResult;
 
     // controller

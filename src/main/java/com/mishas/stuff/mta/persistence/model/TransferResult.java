@@ -1,5 +1,6 @@
 package com.mishas.stuff.mta.persistence.model;
 
+import com.google.gson.annotations.Expose;
 import com.mishas.stuff.common.interfaces.IEntity;
 
 import javax.persistence.*;
@@ -28,6 +29,9 @@ public class TransferResult implements IEntity {
 
     @Column(name = "transfer_currency", nullable = false)
     private String transferCurrency;
+
+    @OneToOne(mappedBy = "transferResult", fetch = FetchType.EAGER)
+    private transient Transfer transfer;
 
     // constructor
 
@@ -80,6 +84,14 @@ public class TransferResult implements IEntity {
 
     public void setTransferCurrency(String transferCurrency) {
         this.transferCurrency = transferCurrency;
+    }
+
+    public Transfer getTransfer() {
+        return transfer;
+    }
+
+    public void setTransfer(Transfer transfer) {
+        this.transfer = transfer;
     }
 
     @Override
