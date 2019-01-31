@@ -34,14 +34,20 @@ public class AccountService implements IAccountService {
     @Override
     public AccountDto update(long id, AccountDto resource) {
         LOGGER.info("updating a resource with Id: " + id);
-        Account entity = accountRepository.update(id, new Account(resource));;
-        return new AccountDto(entity);
+        if (accountExists(id)){
+            Account entity = accountRepository.update(id, new Account(resource));;
+            return new AccountDto(entity);
+        }
+        return new AccountDto();
+
     }
 
     @Override
     public void delete(long id) {
         LOGGER.info("deleting a resource with Id: " + id);
-        accountRepository.delete(id);
+        if (accountExists(id)){
+            accountRepository.delete(id);
+        }
     }
 
     public boolean accountExists(long id) {
