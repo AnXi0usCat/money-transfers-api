@@ -6,7 +6,6 @@ import com.mishas.stuff.common.utils.InputValidator;
 import com.mishas.stuff.common.utils.StandardResponse;
 import com.mishas.stuff.common.utils.StatusResponse;
 import com.mishas.stuff.mta.service.ITransferService;
-import com.mishas.stuff.mta.web.dto.AccountDto;
 import com.mishas.stuff.mta.web.dto.TransferDto;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -50,11 +49,9 @@ public class TransferController  implements IController {
                     .toJson(new StandardResponse(StatusResponse.SUCCESS,   "CREATED", null));
         });
 
-        head("/api/v1/accounts/:id", (request, response) -> {
+        head("/api/v1/transfers/:id", (request, response) -> {
             long param = inputValidator.validatePathParam(request.params(":id"));
-            int status = transferService.transferExists(param) == true ?
-                    HttpStatus.OK_200 :
-                    HttpStatus.NOT_FOUND_404;
+            int status = transferService.transferExists(param) ? HttpStatus.OK_200 : HttpStatus.NOT_FOUND_404;
             response.status(status);
             return response;
         });

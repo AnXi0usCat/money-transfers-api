@@ -6,6 +6,7 @@ import com.mishas.stuff.mta.web.dto.TransferDto;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "transfer")
@@ -125,5 +126,23 @@ public class Transfer implements IEntity {
                 ", balance=" + balance +
                 ", transferResult=" + transferResult +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Transfer)) return false;
+        Transfer transfer = (Transfer) o;
+        return Objects.equals(getId(), transfer.getId()) &&
+                Objects.equals(getSourceAccount(), transfer.getSourceAccount()) &&
+                Objects.equals(getDestinationAccount(), transfer.getDestinationAccount()) &&
+                Objects.equals(getCurrency(), transfer.getCurrency()) &&
+                Objects.equals(getBalance(), transfer.getBalance()) &&
+                Objects.equals(getTransferResult(), transfer.getTransferResult());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getSourceAccount(), getDestinationAccount(), getCurrency(), getBalance(), getTransferResult());
     }
 }

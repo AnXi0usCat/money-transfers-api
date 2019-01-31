@@ -5,6 +5,7 @@ import com.mishas.stuff.common.interfaces.IEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(name = "transfer_result")
@@ -124,5 +125,31 @@ public class TransferResult implements IEntity {
                 ", sourceAccountCurrency='" + sourceAccountCurrency + '\'' +
                 ", transferCurrency='" + transferCurrency + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransferResult)) return false;
+        TransferResult that = (TransferResult) o;
+        return Objects.equals(getId(), that.getId()) &&
+                Objects.equals(getBalance(), that.getBalance()) &&
+                Objects.equals(getPreviousBalance(), that.getPreviousBalance()) &&
+                Objects.equals(getTransactionAmount(), that.getTransactionAmount()) &&
+                Objects.equals(getSourceAccountCurrency(), that.getSourceAccountCurrency()) &&
+                Objects.equals(getTransferCurrency(), that.getTransferCurrency()) &&
+                Objects.equals(getTransfer(), that.getTransfer());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                getId(),
+                getBalance(),
+                getPreviousBalance(),
+                getTransactionAmount(),
+                getSourceAccountCurrency(),
+                getTransferCurrency(),
+                getTransfer());
     }
 }

@@ -5,6 +5,7 @@ import com.mishas.stuff.mta.web.dto.AccountDto;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 @Entity
@@ -90,5 +91,20 @@ public class Account implements IEntity {
                 ", currency='" + currency + '\'' +
                 ", balance=" + balance +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account)) return false;
+        Account account = (Account) o;
+        return Objects.equals(getId(), account.getId()) &&
+                Objects.equals(getCurrency(), account.getCurrency()) &&
+                Objects.equals(getBalance(), account.getBalance());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCurrency(), getBalance());
     }
 }

@@ -87,9 +87,7 @@ public class AccountController implements IController {
 
         head("/api/v1/accounts/:id", (request, response) -> {
             long param = inputValidator.validatePathParam(request.params(":id"));
-            int status = accountService.accountExists(param) == true ?
-                    HttpStatus.OK_200 :
-                    HttpStatus.NOT_FOUND_404;
+            int status = accountService.accountExists(param) ? HttpStatus.OK_200 : HttpStatus.NOT_FOUND_404;
             response.status(status);
             return response;
         });

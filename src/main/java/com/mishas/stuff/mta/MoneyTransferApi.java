@@ -5,10 +5,6 @@ import com.mishas.stuff.mta.web.controller.ExceptionHandlerController;
 import com.mishas.stuff.mta.web.controller.TransferController;
 import com.mishas.stuff.mta.service.impl.AccountService;
 import com.mishas.stuff.mta.service.impl.TransferService;
-
-
-import static spark.Spark.internalServerError;
-import static spark.Spark.notFound;
 import static spark.Spark.port;
 
 public class MoneyTransferApi {

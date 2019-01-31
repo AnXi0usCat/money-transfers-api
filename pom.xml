@@ -52,6 +52,14 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- testing libraries -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <!--  make it work with java 11 java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException -->
         <dependency>
@@ -79,7 +87,9 @@
 
     <build>
         <plugins>
+
             <plugin>
+                <!-- speicify java version-->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -87,6 +97,33 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+
+
+            <plugin>
+                <!-- include all of the dependencies and Build an executable JAR -->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>com.mishas.stuff.mta.MoneyTransferApi</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 
