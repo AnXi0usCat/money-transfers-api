@@ -1,14 +1,14 @@
 package com.mishas.stuff.mta.service;
 
 import com.mishas.stuff.common.interfaces.ICrudService;
-import com.mishas.stuff.mta.persistence.model.Transfer;
+import com.mishas.stuff.mta.web.dto.TransferDto;
 
-public interface ITransferService extends ICrudService<Transfer> {
+public interface ITransferService extends ICrudService<TransferDto> {
 
     // we don't need these methods so default implementation will do
 
-    default Transfer update(long id, Transfer resource) {
-        return new Transfer();
+    default TransferDto update(long id, TransferDto resource) {
+        return new TransferDto();
     }
 
     default void delete(long id) {}

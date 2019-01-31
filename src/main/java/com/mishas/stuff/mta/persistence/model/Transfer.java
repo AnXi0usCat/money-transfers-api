@@ -1,6 +1,7 @@
 package com.mishas.stuff.mta.persistence.model;
 
 import com.mishas.stuff.common.interfaces.IEntity;
+import com.mishas.stuff.mta.web.dto.TransferDto;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -50,6 +51,15 @@ public class Transfer implements IEntity {
         this.destinationAccount = destinationAccount;
         this.currency = currency;
         this.balance = balance;
+    }
+
+    // dto to entity
+    public Transfer(TransferDto resource) {
+        this.sourceAccount = resource.getSourceAccount();
+        this.destinationAccount = resource.getDestinationAccount();
+        this.currency = resource.getCurrency();
+        this.balance = resource.getBalance();
+        this.transferResult = resource.getTransferResult();
     }
 
     // api

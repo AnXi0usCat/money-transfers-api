@@ -1,6 +1,7 @@
 package com.mishas.stuff.mta.persistence.model;
 
 import com.mishas.stuff.common.interfaces.IEntity;
+import com.mishas.stuff.mta.web.dto.AccountDto;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,8 +22,6 @@ public class Account implements IEntity {
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
-    @Column(name = "reserved_balance", nullable = false)
-    private BigDecimal reservedBalance;
 
     // constructor
 
@@ -33,20 +32,27 @@ public class Account implements IEntity {
     public Account(String currency) {
         this.currency = currency;
         this.balance = new BigDecimal(0);
-        this.reservedBalance = new BigDecimal(0);
+
     }
 
     public Account(String currency, BigDecimal balance) {
         this.currency = currency;
         this.balance = balance;
-        this.reservedBalance = new BigDecimal(0);
+
     }
 
-    public Account(Long id, String currency, BigDecimal balance, BigDecimal reservedBalance) {
+    public Account(Long id, String currency, BigDecimal balance) {
         this.id = id;
         this.currency = currency;
         this.balance = balance;
-        this.reservedBalance = reservedBalance;
+    }
+
+    // Controller: convert from Dto to Entity
+
+    public Account(AccountDto accountDto) {
+        this.id = accountDto.getId();
+        this.currency = accountDto.getCurrency();
+        this.balance = accountDto.getBalance();
     }
 
     // api
@@ -77,21 +83,12 @@ public class Account implements IEntity {
         this.balance = balance;
     }
 
-    public BigDecimal getReservedBalance() {
-        return reservedBalance;
-    }
-
-    public void setReservedBalance(BigDecimal reservedBalance) {
-        this.reservedBalance = reservedBalance;
-    }
-
     @Override
     public String toString() {
         return "Account{" +
                 "id=" + id +
                 ", currency='" + currency + '\'' +
                 ", balance=" + balance +
-                ", reservedBalance=" + reservedBalance +
                 '}';
     }
 }
