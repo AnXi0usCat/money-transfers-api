@@ -5,6 +5,7 @@ import com.mishas.stuff.common.interfaces.IController;
 import com.mishas.stuff.common.utils.StandardResponse;
 import com.mishas.stuff.common.utils.StatusResponse;
 import com.mishas.stuff.common.utils.exceptions.MyFundsTransferException;
+import com.mishas.stuff.common.utils.exceptions.MyInputValidationException;
 import com.mishas.stuff.common.utils.exceptions.MyMissingResourceException;
 import com.mishas.stuff.common.utils.exceptions.MyPersistenceException;
 
@@ -49,6 +50,12 @@ public class ExceptionHandlerController implements IController {
         });
 
         exception(MyFundsTransferException.class, (exception, request, response) -> {
+            response.status(500);
+            response.type("application/json");
+            response.body(new Gson().toJson(mapException(exception)));
+        });
+
+        exception(MyInputValidationException.class, (exception, request, response) -> {
             response.status(500);
             response.type("application/json");
             response.body(new Gson().toJson(mapException(exception)));

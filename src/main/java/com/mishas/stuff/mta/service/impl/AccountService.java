@@ -7,7 +7,6 @@ import com.mishas.stuff.mta.persistence.model.Transfer;
 import com.mishas.stuff.mta.service.IAccountService;
 import com.mishas.stuff.mta.persistence.model.TransferResult;
 import com.mishas.stuff.mta.web.dto.AccountDto;
-import com.mishas.stuff.mta.web.dto.TransferDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,10 @@ public class AccountService implements IAccountService {
     @Override
     public AccountDto get(long id) {
         LOGGER.info("getting resource with ID: " + id);
-        return new AccountDto(accountRepository.get(id));
+        if (accountExists(id)){
+            return new AccountDto(accountRepository.get(id));
+        }
+        return new AccountDto();
     }
 
     @Override
