@@ -156,7 +156,7 @@ public class MoneyTransferTest {
         Account accountSource = accountRepository.get(keySource);
         Account AccountDest = accountRepository.get(keyDest);
 
-        // destination account should only have 100 GBP on it NOT more
+        // destination account should only have 100 GBP on it, NOT more
         assertEquals(accountSource.getBalance().compareTo(new BigDecimal(0.00)), 0);
         assertEquals(AccountDest.getBalance().compareTo(new BigDecimal(100.00)), 0);
     }

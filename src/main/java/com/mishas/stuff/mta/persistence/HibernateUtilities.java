@@ -1,6 +1,7 @@
 package com.mishas.stuff.mta.persistence;
 
 
+import com.mishas.stuff.common.utils.ConfigPropertiesLoader;
 import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.persistence.model.Transfer;
 import com.mishas.stuff.mta.persistence.model.TransferResult;
@@ -22,10 +23,10 @@ public class HibernateUtilities {
                 Configuration configuration = new Configuration();
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Properties settings = new Properties();
-                settings.put(Environment.DRIVER, "org.h2.Driver");
-                settings.put(Environment.URL, "jdbc:h2:mem:test?useSSL=false");
-                settings.put(Environment.USER, "sa");
-                settings.put(Environment.PASS, "");
+                settings.put(Environment.DRIVER, ConfigPropertiesLoader.getProperty("h2_driver",null));
+                settings.put(Environment.URL, ConfigPropertiesLoader.getProperty("h2_connection_url", null));
+                settings.put(Environment.USER, ConfigPropertiesLoader.getProperty("h2_user", null));
+                settings.put(Environment.PASS, ConfigPropertiesLoader.getProperty("h2_password",null));
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.H2Dialect");
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
@@ -35,7 +36,7 @@ public class HibernateUtilities {
                 settings.put(Environment.C3P0_MIN_SIZE, 10);
                 settings.put(Environment.C3P0_MAX_SIZE, 40);
                 settings.put(Environment.C3P0_TIMEOUT, 1800);
-                settings.put(Environment.C3P0_MAX_STATEMENTS, 80);
+                settings.put(Environment.C3P0_MAX_STATEMENTS, 0);
 
                 configuration.setProperties(settings);
                 // entities
