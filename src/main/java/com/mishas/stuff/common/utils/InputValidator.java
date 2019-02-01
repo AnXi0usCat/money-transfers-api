@@ -13,6 +13,10 @@ public class InputValidator<T extends IValidDto> {
         this.clazz = clazz;
     }
 
+    /**
+     * @param input string version of the numeric ID
+     * @return Long id
+     */
     public long validatePathParam(Object input) {
         long inputParam;
         try {
@@ -23,6 +27,11 @@ public class InputValidator<T extends IValidDto> {
         return inputParam;
     }
 
+    /**
+     * @param input Json String (Hopefully)
+     * @param <T> Object which implements IValidDto interface
+     * @return instance of Object which implements IValidDto
+     */
     public <T extends IValidDto> T validatePayload(Object input) {
         T resource;
         try {
@@ -33,6 +42,9 @@ public class InputValidator<T extends IValidDto> {
         return resource;
     }
 
+    /**
+     * @param resource instance of Object which implements IValidDto
+     */
     public <T  extends IValidDto> void isPayloadAValidDto(T resource) {
         if (!resource.isValid()) {
             throw new MyInputValidationException("Not a valid input Payload: " + resource.toString());
