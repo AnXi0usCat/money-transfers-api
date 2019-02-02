@@ -2,6 +2,7 @@ package com.mishas.stuff.mta.service.impl;
 
 import com.mishas.stuff.common.utils.exceptions.MyMissingResourceException;
 import com.mishas.stuff.mta.persistence.dao.AccountRepository;
+import com.mishas.stuff.mta.persistence.dao.TransferRepository;
 import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.persistence.model.Transfer;
 import com.mishas.stuff.mta.service.IAccountService;
@@ -14,7 +15,11 @@ import org.slf4j.LoggerFactory;
 public class AccountService implements IAccountService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
-    private final AccountRepository accountRepository = new AccountRepository();
+    private final AccountRepository accountRepository;
+
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
 
     @Override
     public AccountDto get(long id) {
@@ -35,7 +40,8 @@ public class AccountService implements IAccountService {
     public AccountDto update(long id, AccountDto resource) {
         LOGGER.info("updating a resource with Id: " + id);
         if (accountExists(id)){
-            Account entity = accountRepository.update(id, new Account(resource));;
+            Account entity = accountRepository.update(id, new Account(resource));
+            System.out.println(entity);
             return new AccountDto(entity);
         }
         return new AccountDto();

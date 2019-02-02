@@ -1,4 +1,4 @@
-package com.mishas.stuff.dao;
+package com.mishas.stuff.integration;
 
 import com.mishas.stuff.common.utils.exceptions.MyFundsTransferException;
 import com.mishas.stuff.mta.persistence.dao.AccountRepository;
@@ -20,8 +20,8 @@ public class MoneyTransferTest {
     private AccountRepository accountRepository;
     private final static int THREAD_COUNT = 2;
 
-
-    private long serilizableToLong(Serializable input) {
+    // helper method
+    private long serializableToLong(Serializable input) {
         return Long.parseLong(input.toString());
     }
 
@@ -42,7 +42,7 @@ public class MoneyTransferTest {
         // when
         Serializable keySource = accountRepository.create(accountCreateOne);
         Serializable keyDest = accountRepository.create(accountCreateTwo);
-        Transfer transferCreate = new Transfer(serilizableToLong(keySource),serilizableToLong(keyDest),"EUR", new BigDecimal(10));
+        Transfer transferCreate = new Transfer(serializableToLong(keySource), serializableToLong(keyDest),"EUR", new BigDecimal(10));
         accountRepository.transferFundsBetweenAccounts(transferCreate); // throws MyFundsTransferException
     }
 
@@ -57,7 +57,7 @@ public class MoneyTransferTest {
         // when
         Serializable keySource = accountRepository.create(accountCreateOne);
         Serializable keyDest = accountRepository.create(accountCreateTwo);
-        Transfer transferCreate = new Transfer(serilizableToLong(keySource), serilizableToLong(keyDest),"EUR", new BigDecimal(10));
+        Transfer transferCreate = new Transfer(serializableToLong(keySource), serializableToLong(keyDest),"EUR", new BigDecimal(10));
         accountRepository.transferFundsBetweenAccounts(transferCreate); // throws MyFundsTransferException
     }
 
@@ -84,8 +84,8 @@ public class MoneyTransferTest {
         // given
         Account accountCreateOne = new Account("GBP", new BigDecimal(100));
         Account accountCreateTwo = new Account("GBP", new BigDecimal(0));
-        Long keySource = Long.parseLong(accountRepository.create(accountCreateOne).toString());
-        Long keyDest = Long.parseLong(accountRepository.create(accountCreateTwo).toString());
+        Long keySource = serializableToLong(accountRepository.create(accountCreateOne));
+        Long keyDest = serializableToLong(accountRepository.create(accountCreateTwo));
 
         Transfer transferCreate = new Transfer(keySource, keyDest,"GBP", new BigDecimal(100));
         accountRepository.transferFundsBetweenAccounts(transferCreate);
@@ -103,8 +103,8 @@ public class MoneyTransferTest {
         Account accountCreateOne = new Account("GBP", new BigDecimal(100));
         Account accountCreateTwo = new Account("GBP", new BigDecimal(0));
         // when
-        Long keySource = Long.parseLong(accountRepository.create(accountCreateOne).toString());
-        Long keyDest = Long.parseLong(accountRepository.create(accountCreateTwo).toString());
+        Long keySource = serializableToLong(accountRepository.create(accountCreateOne));
+        Long keyDest = serializableToLong(accountRepository.create(accountCreateTwo));
 
         Transfer transferCreate = new Transfer(keySource,keyDest,"GBP", new BigDecimal(110));
         try {
@@ -130,8 +130,8 @@ public class MoneyTransferTest {
         Account accountCreateOne = new Account("GBP", new BigDecimal(100));
         Account accountCreateTwo = new Account("GBP", new BigDecimal(0));
 
-        Long keySource = Long.parseLong(accountRepository.create(accountCreateOne).toString());
-        Long keyDest = Long.parseLong(accountRepository.create(accountCreateTwo).toString());
+        Long keySource = serializableToLong(accountRepository.create(accountCreateOne));
+        Long keyDest = serializableToLong(accountRepository.create(accountCreateTwo));
 
         Transfer transferCreate = new Transfer(keySource, keyDest,"GBP", new BigDecimal(100));
 

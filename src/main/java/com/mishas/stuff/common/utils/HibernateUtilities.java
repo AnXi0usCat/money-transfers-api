@@ -1,4 +1,4 @@
-package com.mishas.stuff.mta.persistence;
+package com.mishas.stuff.common.utils;
 
 
 import com.mishas.stuff.common.utils.ConfigPropertiesLoader;
@@ -14,6 +14,9 @@ import org.hibernate.service.ServiceRegistry;
 import java.util.Properties;
 
 
+/**
+ * Hibenrate Configuration class, returns SessionFactory to create sessions
+ */
 public class HibernateUtilities {
 
     private static SessionFactory sessionFactory;
@@ -23,20 +26,20 @@ public class HibernateUtilities {
                 Configuration configuration = new Configuration();
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Properties settings = new Properties();
-                settings.put(Environment.DRIVER, ConfigPropertiesLoader.getProperty("h2_driver",null));
-                settings.put(Environment.URL, ConfigPropertiesLoader.getProperty("h2_connection_url", null));
-                settings.put(Environment.USER, ConfigPropertiesLoader.getProperty("h2_user", null));
-                settings.put(Environment.PASS, ConfigPropertiesLoader.getProperty("h2_password",null));
-                settings.put(Environment.DIALECT, "org.hibernate.dialect.H2Dialect");
-                settings.put(Environment.SHOW_SQL, "true");
-                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
-                settings.put(Environment.AUTOCOMMIT, false);
+                settings.put(Environment.DRIVER, ConfigPropertiesLoader.getProperty("h2_driver"));
+                settings.put(Environment.URL, ConfigPropertiesLoader.getProperty("h2_connection_url"));
+                settings.put(Environment.USER, ConfigPropertiesLoader.getProperty("h2_user"));
+                settings.put(Environment.PASS, ConfigPropertiesLoader.getProperty("h2_password"));
+                settings.put(Environment.DIALECT, ConfigPropertiesLoader.getProperty("hibernate_dialect"));
+                settings.put(Environment.SHOW_SQL, ConfigPropertiesLoader.getProperty("hibernate_show_sql"));
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, ConfigPropertiesLoader.getProperty("hibernate_current_session_context_class"));
+                settings.put(Environment.HBM2DDL_AUTO, ConfigPropertiesLoader.getProperty("hibernate_hbm2ddl_auto"));
+                settings.put(Environment.AUTOCOMMIT, ConfigPropertiesLoader.getProperty("hibernate_auto_commit"));
                 // pool size
-                settings.put(Environment.C3P0_MIN_SIZE, 10);
-                settings.put(Environment.C3P0_MAX_SIZE, 40);
-                settings.put(Environment.C3P0_TIMEOUT, 1800);
-                settings.put(Environment.C3P0_MAX_STATEMENTS, 0);
+                settings.put(Environment.C3P0_MIN_SIZE, ConfigPropertiesLoader.getProperty("c3p0_min_size"));
+                settings.put(Environment.C3P0_MAX_SIZE, ConfigPropertiesLoader.getProperty("c3p0_max_size"));
+                settings.put(Environment.C3P0_TIMEOUT, ConfigPropertiesLoader.getProperty("c3p0_timeout"));
+                settings.put(Environment.C3P0_MAX_STATEMENTS, ConfigPropertiesLoader.getProperty("c3p0_max_statements"));
 
                 configuration.setProperties(settings);
                 // entities

@@ -65,11 +65,20 @@
 
         <!-- testing libraries -->
         <dependency>
+            <!-- junit -->
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <!-- mocking -->
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.23.4</version>
+            <scope>test</scope>
+        </dependency>
+
 
 
         <!--  make it work with java 11 java.lang.NoClassDefFoundError: javax/xml/bind/JAXBException -->

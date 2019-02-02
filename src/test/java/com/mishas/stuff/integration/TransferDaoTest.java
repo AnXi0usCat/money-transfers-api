@@ -1,4 +1,4 @@
-package com.mishas.stuff.dao;
+package com.mishas.stuff.integration;
 
 import com.mishas.stuff.common.utils.exceptions.MyPersistenceException;
 import com.mishas.stuff.mta.persistence.dao.TransferRepository;

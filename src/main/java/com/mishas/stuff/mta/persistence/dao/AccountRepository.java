@@ -2,7 +2,7 @@ package com.mishas.stuff.mta.persistence.dao;
 
 import com.mishas.stuff.common.utils.exceptions.MyFundsTransferException;
 import com.mishas.stuff.common.utils.exceptions.MyPersistenceException;
-import com.mishas.stuff.mta.persistence.HibernateUtilities;
+import com.mishas.stuff.common.utils.HibernateUtilities;
 import com.mishas.stuff.mta.persistence.model.Account;
 import com.mishas.stuff.mta.persistence.model.Transfer;
 import com.mishas.stuff.mta.persistence.model.TransferResult;
