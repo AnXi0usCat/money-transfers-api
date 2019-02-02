@@ -18,6 +18,11 @@ public class AccountDto implements IValidDto {
         super();
     }
 
+    public AccountDto( String currency, BigDecimal balance) {
+        this.currency = currency;
+        this.balance = balance;
+    }
+
     public AccountDto(Long id, String currency, BigDecimal balance) {
         this.id = id;
         this.currency = currency;
