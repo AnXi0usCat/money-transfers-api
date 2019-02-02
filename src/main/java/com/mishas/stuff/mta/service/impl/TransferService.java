@@ -14,8 +14,13 @@ public class TransferService implements ITransferService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransferService.class);
 
-    private final TransferRepository transferRepository = new TransferRepository();
-    private final IAccountService accountService = new AccountService();
+    private  TransferRepository transferRepository;
+    private IAccountService accountService;
+
+    public TransferService(TransferRepository transferRepository,  IAccountService accountService) {
+        this.transferRepository = transferRepository;
+        this.accountService = accountService;
+    }
 
     @Override
     public TransferDto get(long id) {

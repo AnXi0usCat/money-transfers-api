@@ -2,7 +2,7 @@ package com.mishas.stuff.mta.persistence.dao;
 
 import com.mishas.stuff.common.interfaces.IEntity;
 import com.mishas.stuff.common.utils.exceptions.MyPersistenceException;
-import com.mishas.stuff.mta.persistence.HibernateUtilities;
+import com.mishas.stuff.common.utils.HibernateUtilities;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

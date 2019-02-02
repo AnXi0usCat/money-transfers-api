@@ -5,6 +5,7 @@ import com.mishas.stuff.mta.persistence.model.Transfer;
 import com.mishas.stuff.mta.persistence.model.TransferResult;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class TransferDto implements IValidDto {
 
@@ -24,12 +25,11 @@ public class TransferDto implements IValidDto {
         super();
     }
 
-    public TransferDto(Long sourceAccount, Long destinationAccount, String currency, BigDecimal balance, TransferResult transferResult) {
+    public TransferDto(Long sourceAccount, Long destinationAccount, String currency, BigDecimal balance) {
         this.sourceAccount = sourceAccount;
         this.destinationAccount = destinationAccount;
         this.currency = currency;
         this.balance = balance;
-        this.transferResult = transferResult;
     }
 
     public TransferDto(Transfer entity) {
@@ -96,5 +96,23 @@ public class TransferDto implements IValidDto {
     @Override
     public boolean isValid() {
         return this.sourceAccount != null && this.destinationAccount != null && this.currency != null && this.balance != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransferDto)) return false;
+        TransferDto that = (TransferDto) o;
+        return Objects.equals(getId(), that.getId()) &&
+                Objects.equals(getSourceAccount(), that.getSourceAccount()) &&
+                Objects.equals(getDestinationAccount(), that.getDestinationAccount()) &&
+                Objects.equals(getCurrency(), that.getCurrency()) &&
+                Objects.equals(getBalance(), that.getBalance()) &&
+                Objects.equals(getTransferResult(), that.getTransferResult());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getSourceAccount(), getDestinationAccount(), getCurrency(), getBalance(), getTransferResult());
     }
 }

@@ -1,18 +1,15 @@
-package com.mishas.stuff.dao;
+package com.mishas.stuff.integration;
 
-import com.mishas.stuff.common.utils.exceptions.MyFundsTransferException;
 import com.mishas.stuff.common.utils.exceptions.MyPersistenceException;
 import com.mishas.stuff.mta.persistence.dao.AccountRepository;
 import com.mishas.stuff.mta.persistence.model.Account;
 
-import com.mishas.stuff.mta.persistence.model.Transfer;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.concurrent.CountDownLatch;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

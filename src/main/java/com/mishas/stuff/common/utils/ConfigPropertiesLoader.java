@@ -42,7 +42,7 @@ public class ConfigPropertiesLoader {
         }
     }
 
-    public static String getProperty(String property, String defaultProperty) {
-            return prop.getProperty(property, defaultProperty);
+    public static String getProperty(String property) {
+            return prop.getProperty(property);
     }
 }

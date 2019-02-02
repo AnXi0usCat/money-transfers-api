@@ -4,6 +4,7 @@ import com.mishas.stuff.common.interfaces.IValidDto;
 import com.mishas.stuff.mta.persistence.model.Account;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class AccountDto implements IValidDto {
 
@@ -71,5 +72,20 @@ public class AccountDto implements IValidDto {
                 ", currency='" + currency + '\'' +
                 ", balance=" + balance +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AccountDto)) return false;
+        AccountDto that = (AccountDto) o;
+        return Objects.equals(getId(), that.getId()) &&
+                Objects.equals(getCurrency(), that.getCurrency()) &&
+                Objects.equals(getBalance(), that.getBalance());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getCurrency(), getBalance());
     }
 }

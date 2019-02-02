@@ -45,7 +45,7 @@ public class InputValidator<T extends IValidDto> {
     /**
      * @param resource instance of Object which implements IValidDto
      */
-    public <T  extends IValidDto> void isPayloadAValidDto(T resource) {
+    public <T extends IValidDto> void isPayloadAValidDto(T resource) {
         if (!resource.isValid()) {
             throw new MyInputValidationException("Not a valid input Payload: " + resource.toString());
         }
