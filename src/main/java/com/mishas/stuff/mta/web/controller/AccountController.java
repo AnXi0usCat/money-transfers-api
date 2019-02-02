@@ -10,6 +10,8 @@ import com.mishas.stuff.mta.service.IAccountService;
 import com.mishas.stuff.mta.web.dto.AccountDto;
 import org.eclipse.jetty.http.HttpStatus;
 
+import java.io.Serializable;
+
 import static spark.Spark.*;
 
 
@@ -17,6 +19,7 @@ public class AccountController implements IController {
 
     private IAccountService accountService;
     private InputValidator<AccountDto> inputValidator = new InputValidator(AccountDto.class);
+    private static final String LOCATION_PATH = "/api/v1/accounts/";
 
     public AccountController(IAccountService accountService) {
         this.accountService = accountService;
@@ -46,8 +49,10 @@ public class AccountController implements IController {
 
             AccountDto resource = inputValidator.validatePayload(request.body());
             inputValidator.isPayloadAValidDto(resource);
-
-            accountService.create(resource);
+            // set location header
+            Serializable locationKey = accountService.create(resource);
+            response.header("Location", LOCATION_PATH + locationKey);
+            // create response payload
             return new Gson().toJson(
                     new StandardResponse(
                             StatusResponse.SUCCESS,

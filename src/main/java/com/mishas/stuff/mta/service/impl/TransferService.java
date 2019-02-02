@@ -9,6 +9,8 @@ import com.mishas.stuff.mta.web.dto.TransferDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 
 public class TransferService implements ITransferService {
 
@@ -32,12 +34,12 @@ public class TransferService implements ITransferService {
     }
 
     @Override
-    public void create(TransferDto resource) {
+    public Serializable create(TransferDto resource) {
         LOGGER.info("creating a new resource: " + resource.toString());
         Transfer entity = new Transfer(resource);
         TransferResult transferResult = accountService.transferFundsBetweenAccounts(entity);
         entity.setTransferResult(transferResult);
-        transferRepository.create(entity);
+        return transferRepository.create(entity);
     }
 
     @Override

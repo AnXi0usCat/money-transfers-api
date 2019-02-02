@@ -11,8 +11,10 @@ import com.mishas.stuff.mta.web.controller.AccountController;
 import com.mishas.stuff.mta.web.controller.ExceptionHandlerController;
 import com.mishas.stuff.mta.web.dto.AccountDto;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.junit.Before;
@@ -36,7 +38,7 @@ public class AccountControllerTest extends TestHttpClient {
     private static AccountController accountController;
     private static AccountService accountService;
     private static AccountRepository accountRepository;
-    // we need this because it handles errors
+    // we need this because it handles exceptions
     private static ExceptionHandlerController exceptionHandlerController;
 
     @Before
@@ -55,7 +57,7 @@ public class AccountControllerTest extends TestHttpClient {
      */
     @Test
     public void testGetMethodWhenAccountDoesntExist_return200OK() throws Exception {
-        URI uri = builder.setPath("/accounts/1").build();
+        URI uri = builder.setPath("/api/v1/accounts/1").build();
         HttpGet request = new HttpGet(uri);
         HttpResponse response = httpClient.execute(request);
         int statusCode = response.getStatusLine().getStatusCode();
@@ -67,7 +69,7 @@ public class AccountControllerTest extends TestHttpClient {
      */
     @Test
     public void testGetMethodWhenAccountwithMalformedUrl_return400BadRequest() throws Exception {
-        URI uri = builder.setPath("/accounts/xcwefrrvcdfvdfvdfvfv").build();
+        URI uri = builder.setPath("/api/v1/accounts/xcwefrrvcdfvdfvdfvfv").build();
         HttpGet request = new HttpGet(uri);
         HttpResponse response = httpClient.execute(request);
         int statusCode = response.getStatusLine().getStatusCode();
@@ -83,8 +85,8 @@ public class AccountControllerTest extends TestHttpClient {
     @Test
     public void testGetMethodWhenAccountExists_receivePayload() throws Exception {
         // create a new account
-        URI uri = builder.setPath("/accounts").build();
-        AccountDto newAccount = new AccountDto(1L, "EUR", new BigDecimal(100));
+        URI uri = builder.setPath("/api/v1/accounts").build();
+        AccountDto newAccount = new AccountDto( "EUR", new BigDecimal(100));
         HttpPost requestPost = new HttpPost(uri);
         requestPost.setHeader("Content-type", "application/json");
         requestPost.setEntity(convertObjectToPayload(newAccount));
@@ -93,16 +95,17 @@ public class AccountControllerTest extends TestHttpClient {
         assertEquals(201, statusCode);
 
         // get the account back
-        uri = builder.setPath("/accounts/1").build();
+        String location = response.getFirstHeader("Location").getValue();
+
+        uri = builder.setPath(location).build();
         HttpGet requestGet = new HttpGet(uri);
         response = httpClient.execute(requestGet);
         statusCode = response.getStatusLine().getStatusCode();
 
-
         AccountDto result = convertPayloadToObject(response);
         assertEquals(200, statusCode);
-        assertEquals(newAccount.getId(), result.getId());
-        assertEquals(newAccount.getCurrency(), result.getCurrency());
+        assertEquals(location.substring(location.length()-1 ), result.getId().toString());
+        assertEquals(newAccount.getCurrency(),  result.getCurrency());
         assertEquals(newAccount.getBalance().compareTo(result.getBalance().setScale(4, RoundingMode.HALF_EVEN)), 0);
     }
 
@@ -112,7 +115,7 @@ public class AccountControllerTest extends TestHttpClient {
     @Test
     public void testPostAccountWithCurrencyNull_return400BadRquest() throws Exception{
         // create a new account
-        URI uri = builder.setPath("/accounts").build();
+        URI uri = builder.setPath("/api/v1/accounts").build();
         AccountDto newAccount = new AccountDto( null, new BigDecimal(100));
         HttpPost requestPost = new HttpPost(uri);
         requestPost.setHeader("Content-type", "application/json");
@@ -130,7 +133,7 @@ public class AccountControllerTest extends TestHttpClient {
      */
     @Test
     public void testPostAccountWithBadPayload_return400BadRequest() throws Exception{
-        URI uri = builder.setPath("/accounts").build();
+        URI uri = builder.setPath("/api/v1/accounts").build();
 
         HttpPost requestPost = new HttpPost(uri);
         requestPost.setHeader("Content-type", "application/json");
@@ -143,12 +146,12 @@ public class AccountControllerTest extends TestHttpClient {
     }
 
     /*
-        Create accoun, should return 201 CREATED, with message CREATED
+        Create account, should return 201 CREATED, with message CREATED
      */
     @Test
     public void testPostAccount_return201Created() throws Exception{
         // create a new account
-        URI uri = builder.setPath("/accounts").build();
+        URI uri = builder.setPath("/api/v1/accounts").build();
         AccountDto newAccount = new AccountDto( "EUR", new BigDecimal(100));
         HttpPost requestPost = new HttpPost(uri);
         requestPost.setHeader("Content-type", "application/json");
@@ -164,35 +167,97 @@ public class AccountControllerTest extends TestHttpClient {
 
     }
 
-    // helper methods
-
-    private StringEntity convertObjectToPayload(IValidDto resource) throws UnsupportedEncodingException {
-        String jsonInString = new Gson().toJson(resource);
-        return new StringEntity(jsonInString);
+    /*
+        Update  account that doesn't exist, should get 200 OK and empty "data" in payload
+     */
+    @Test
+    public void testPutMethodWhenAccountDoesntExist_return200OK() throws Exception {
+        AccountDto updateAccount = new AccountDto( "EUR", new BigDecimal(100));
+        URI uri = builder.setPath("/api/v1/accounts/1").build();
+        HttpPut request = new HttpPut(uri);
+        request.setEntity(convertObjectToPayload(updateAccount));
+        HttpResponse response = httpClient.execute(request);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(200, statusCode);
     }
 
-    private JsonElement convertPayloadToJsonElement (HttpResponse response) throws IOException{
+
+    /*
+     Update  account, should get 200 OK and updated account
+     */
+    @Test
+    public void testPutMethodWhenAccountExist_returnPayload() throws Exception {
+        // create a new account
+        URI uri = builder.setPath("/api/v1/accounts").build();
+        AccountDto newAccount = new AccountDto(1L, "EUR", new BigDecimal(100));
+        HttpPost requestPost = new HttpPost(uri);
+        requestPost.setHeader("Content-type", "application/json");
+        requestPost.setEntity(convertObjectToPayload(newAccount));
+        HttpResponse response = httpClient.execute(requestPost);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(201, statusCode);
+
+        // update accounts payload (+ 100 EUR)
+        AccountDto updateAccount = new AccountDto( 1L, "EUR", new BigDecimal(200));
+        uri = builder.setPath("/api/v1/accounts/1").build();
+        HttpPut request = new HttpPut(uri);
+        request.setEntity(convertObjectToPayload(updateAccount));
+        response = httpClient.execute(request);
+        statusCode = response.getStatusLine().getStatusCode();
+
+        assertEquals(200, statusCode);
+        // the updated balance is 200
+        assertEquals(200, updateAccount.getBalance().doubleValue(), 0.001);
+    }
+
+    /*
+        deleting nonexistent account returns 200 OK and empty payload
+     */
+    @Test
+    public void testDeleteMethodWhenAccountDoesntExist_return200OK() throws Exception {
+        URI uri = builder.setPath("/api/v1/accounts/1").build();
+        HttpDelete request = new HttpDelete(uri);
+        HttpResponse response = httpClient.execute(request);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(200, statusCode);
+    }
+
+    /*
+        deleting an account returns 200 OK and message DELETED
+     */
+    @Test
+    public void testDeleteMethodWhenAccountExists_returns200OKAndMessage() throws Exception {
+        // create a new account
+        URI uri = builder.setPath("/api/v1/accounts").build();
+        AccountDto newAccount = new AccountDto( "EUR", new BigDecimal(100));
+        HttpPost requestPost = new HttpPost(uri);
+        requestPost.setHeader("Content-type", "application/json");
+        requestPost.setEntity(convertObjectToPayload(newAccount));
+        HttpResponse response = httpClient.execute(requestPost);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(201, statusCode);
+
+        uri = builder.setPath("/api/v1/accounts/1").build();
+        HttpDelete request = new HttpDelete(uri);
+        response = httpClient.execute(request);
+        statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(200, statusCode);
+
         String jsonString = EntityUtils.toString(response.getEntity());
         JsonParser parser = new JsonParser();
-        return parser.parse(jsonString);
+        JsonElement element = parser.parse(jsonString);
+        assertEquals("DELETED", element.getAsJsonObject().get("message").getAsString());
     }
+
+    // helper methods
 
     private AccountDto convertPayloadToObject(HttpResponse response) throws IOException {
         JsonObject accountDtoJson = null;
-        JsonElement element = convertPayloadToJsonElement(response);
+        JsonElement element = super.convertPayloadToJsonElement(response);
         if (element.isJsonObject()) {
             accountDtoJson = element.getAsJsonObject().get("data").getAsJsonObject();
+            System.out.println(accountDtoJson);
         }
         return new Gson().fromJson(accountDtoJson, AccountDto.class);
-    }
-
-    private Map<String, String> convertPayloadToMessage(HttpResponse response) throws IOException {
-        JsonElement element = convertPayloadToJsonElement(response);
-        var resultMap = new HashMap<String, String>();
-        if (element.isJsonObject()) {
-            resultMap.put("message", element.getAsJsonObject().get("message").getAsString());
-            resultMap.put("devMessage", element.getAsJsonObject().get("devMessage").getAsString());
-        }
-        return resultMap;
     }
 }
