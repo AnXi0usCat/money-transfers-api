@@ -10,7 +10,7 @@ A Java RESTful API for money transfers between accounts
 - Log4j
 - Apache HTTP Client
 
-### How to run tests and 
+### How to run tests 
 ```sh
 mvn test
 ```
@@ -35,14 +35,14 @@ Application starts a jetty server on localhost port 8080
 | POST | /api/v1/accounts | create a new account |
 | PUT | /api/v1/accounts/{Id} | update the balance on the existing account |
 | DELETE | /api/v1/accounts/{Id} | remove account by accountId | 
-| POST | /api/v1/transfers | transfer money from between accounts |
+| POST | /api/v1/transfers | transfer money between accounts |
 | GET | /api/v1/transfers/{Id} | get the result of the transfer |
 
 Note: when using POST method, the location of created resource can be found in the "Location" header of the response
 
 ### Http Status
 - 200 OK: The request has succeeded
-- 201 CREATED: The request has succeeded
+- 201 Created: a new resource has been created
 - 400 Bad Request: The request could not be understood by the server 
 - 404 Not Found: The requested resource cannot be found
 - 500 Internal Server Error: The server encountered an unexpected condition 
