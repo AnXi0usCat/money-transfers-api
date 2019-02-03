@@ -2,8 +2,10 @@ package com.mishas.stuff.endtoend;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mishas.stuff.common.interfaces.IValidDto;
+import com.mishas.stuff.mta.web.dto.AccountDto;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.utils.HttpClientUtils;
@@ -26,7 +28,7 @@ public abstract class TestHttpClient {
 
     static HttpClient httpClient;
     static PoolingHttpClientConnectionManager httpClientConnectionManager;
-    URIBuilder builder = new URIBuilder().setScheme("http").setHost("localhost:8080");
+    final URIBuilder builder = new URIBuilder().setScheme("http").setHost("0.0.0.0:4567");
 
     @BeforeClass
     public static void beforeClass() {
@@ -37,7 +39,6 @@ public abstract class TestHttpClient {
                 .setConnectionManager(httpClientConnectionManager)
                 .setConnectionManagerShared(true)
                 .build();
-        Spark.port(8080);
     }
 
 
@@ -66,5 +67,14 @@ public abstract class TestHttpClient {
             resultMap.put("devMessage", element.getAsJsonObject().get("devMessage").getAsString());
         }
         return resultMap;
+    }
+
+    AccountDto convertPayloadToObject(HttpResponse response) throws IOException {
+        JsonObject accountDtoJson = null;
+        JsonElement element = convertPayloadToJsonElement(response);
+        if (element.isJsonObject()) {
+            accountDtoJson = element.getAsJsonObject().get("data").getAsJsonObject();
+        }
+        return new Gson().fromJson(accountDtoJson, AccountDto.class);
     }
 }

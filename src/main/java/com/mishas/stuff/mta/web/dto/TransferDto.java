@@ -99,6 +99,18 @@ public class TransferDto implements IValidDto {
     }
 
     @Override
+    public String toString() {
+        return "TransferDto{" +
+                "id=" + id +
+                ", sourceAccount=" + sourceAccount +
+                ", destinationAccount=" + destinationAccount +
+                ", currency='" + currency + '\'' +
+                ", balance=" + balance +
+                ", transferResult=" + transferResult +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TransferDto)) return false;

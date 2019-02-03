@@ -4,12 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mishas.stuff.common.interfaces.IValidDto;
 import com.mishas.stuff.mta.persistence.dao.AccountRepository;
+import com.mishas.stuff.mta.persistence.dao.TransferRepository;
 import com.mishas.stuff.mta.service.impl.AccountService;
+import com.mishas.stuff.mta.service.impl.TransferService;
 import com.mishas.stuff.mta.web.controller.AccountController;
 import com.mishas.stuff.mta.web.controller.ExceptionHandlerController;
+import com.mishas.stuff.mta.web.controller.TransferController;
 import com.mishas.stuff.mta.web.dto.AccountDto;
+import com.mishas.stuff.mta.web.dto.TransferDto;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -17,44 +20,144 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import spark.Spark;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
-public class AccountControllerTest extends TestHttpClient {
+public class EndToEndApiTest extends TestHttpClient {
 
-    private static AccountController accountController;
+    private static TransferController transferController;
+    private static TransferService transferService;
+    private static TransferRepository transferRepository;
     private static AccountService accountService;
     private static AccountRepository accountRepository;
     // we need this because it handles exceptions
     private static ExceptionHandlerController exceptionHandlerController;
+    // we need this to create accounts
+    private static AccountController accountController;
+
+
 
     @Before
     public void before() {
         accountRepository = new AccountRepository();
+        transferRepository = new TransferRepository();
         accountService = new AccountService(accountRepository);
-        accountController = new AccountController(accountService);
+        transferService = new TransferService(transferRepository, accountService);
+        transferController = new TransferController(transferService);
         exceptionHandlerController = new ExceptionHandlerController();
+        accountController = new AccountController(accountService);
         exceptionHandlerController.setupEndpoints();
-        accountController.setupEndpoints();
+        transferController.setupEndpoints();
         Spark.awaitInitialization();
     }
 
     /*
-        Get account that doesn't exist, should get 200 OK and empty "data" in payload
+        get transfer that doesn't exist, get a 200 OK
      */
+    @Test
+    public void testGetMethodWhenTransferDoesntExist_return200OK() throws Exception {
+        URI uri = builder.setPath("/api/v1/transfers/1").build();
+        HttpGet request = new HttpGet(uri);
+        HttpResponse response = httpClient.execute(request);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(200, statusCode);
+    }
+
+    /*
+        create a balance transfer
+        - make sure the transfer was created successfully: status 201 CREATED
+        - make that account balance was transferred successfully: src 0, dst 100
+        - make sure that transfer object exists in the database
+     */
+    @Test
+    public void testPostMethodWhenTransferIsSuccessfull_AccountBalanceShouldChange() throws Exception {
+        // create two new accountsa
+        AccountDto srcAccount = new AccountDto("EUR", new BigDecimal(100));
+        AccountDto dstAccount = new AccountDto("EUR", new BigDecimal(0));
+        String[] locations = createSrcAndDstAccounts(srcAccount, dstAccount);
+        String srcLocation = locations[0];
+        String dstLocation = locations[1];
+
+        TransferDto transferDto = new TransferDto(
+                Long.parseLong(srcLocation.substring(srcLocation.length()-1)),
+                Long.parseLong(dstLocation.substring(dstLocation.length()-1)),
+                "EUR",
+                new BigDecimal(100)
+        );
+
+        // create a new balance transfer
+        URI uri = builder.setPath("/api/v1/transfers").build();
+        HttpPost requestPost = new HttpPost(uri);
+        requestPost.setHeader("Content-type", "application/json");
+        requestPost.setEntity(convertObjectToPayload(transferDto));
+        HttpResponse response = httpClient.execute(requestPost);
+        int statusCode = response.getStatusLine().getStatusCode();
+        String transferLocation = response.getFirstHeader("Location").getValue();
+
+        assertEquals(201, statusCode);   // make sure transfer was successful
+
+        // get back the accounts, make sure that balance on
+        // Src account is 0 and on the Dst Account is 100
+        uri = builder.setPath(srcLocation).build();
+        HttpGet request = new HttpGet(uri);
+        response = httpClient.execute(request);
+        AccountDto accountDtoSrcAfterTransfer = convertPayloadToObject(response);
+
+        uri = builder.setPath(dstLocation).build();
+        request = new HttpGet(uri);
+        response = httpClient.execute(request);
+        AccountDto accountDtoDstAfterTransfer = convertPayloadToObject(response);
+
+        // src account balance is 0
+        assertEquals(0, accountDtoSrcAfterTransfer.getBalance().doubleValue(), 0.001);
+        // dst account balance
+        assertEquals(100, accountDtoDstAfterTransfer.getBalance().doubleValue(), 0.001);
+
+        // get the transfer object from the database, make sure it exists
+        uri = builder.setPath(transferLocation).build();
+        request = new HttpGet(uri);
+        response = httpClient.execute(request);
+        statusCode = response.getStatusLine().getStatusCode();
+
+        assertEquals(200, statusCode);
+        assertTrue(convertPayloadToTransferObject(response) != null); // get the transfer object from the database, make sure it exists
+
+    }
+
+    /*
+        create source and destination accounts and returns location list
+     */
+    public String[] createSrcAndDstAccounts(AccountDto srcAccount, AccountDto dstAccount) throws Exception {
+        String[] locationList = new String[2];
+        URI uri = builder.setPath("/api/v1/accounts").build();
+        // create a source account
+        HttpPost requestPost = new HttpPost(uri);
+        requestPost.setHeader("Content-type", "application/json");
+        requestPost.setEntity(convertObjectToPayload(srcAccount));
+        HttpResponse response = httpClient.execute(requestPost);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(201, statusCode);
+        locationList[0] = response.getFirstHeader("Location").getValue();
+
+        // create destination
+        requestPost.setEntity(convertObjectToPayload(dstAccount));
+        response = httpClient.execute(requestPost);
+        locationList[1] = response.getFirstHeader("Location").getValue();
+        return locationList;
+    }
+
+    /*
+    Get account that doesn't exist, should get 200 OK and empty "data" in payload
+ */
     @Test
     public void testGetMethodWhenAccountDoesntExist_return200OK() throws Exception {
         URI uri = builder.setPath("/api/v1/accounts/1").build();
@@ -250,14 +353,13 @@ public class AccountControllerTest extends TestHttpClient {
     }
 
     // helper methods
-
-    private AccountDto convertPayloadToObject(HttpResponse response) throws IOException {
+    private TransferDto convertPayloadToTransferObject(HttpResponse response) throws IOException {
         JsonObject accountDtoJson = null;
         JsonElement element = super.convertPayloadToJsonElement(response);
         if (element.isJsonObject()) {
             accountDtoJson = element.getAsJsonObject().get("data").getAsJsonObject();
-            System.out.println(accountDtoJson);
         }
-        return new Gson().fromJson(accountDtoJson, AccountDto.class);
+        return new Gson().fromJson(accountDtoJson, TransferDto.class);
     }
+
 }
