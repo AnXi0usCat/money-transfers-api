@@ -11,6 +11,8 @@ import com.mishas.stuff.mta.web.dto.AccountDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
+
 
 public class AccountService implements IAccountService {
 
@@ -31,9 +33,9 @@ public class AccountService implements IAccountService {
     }
 
     @Override
-    public void create(AccountDto resource) {
+    public Serializable create(AccountDto resource) {
         LOGGER.info("creating a new resource" + resource.toString());
-        accountRepository.create(new Account(resource));
+        return accountRepository.create(new Account(resource));
     }
 
     @Override

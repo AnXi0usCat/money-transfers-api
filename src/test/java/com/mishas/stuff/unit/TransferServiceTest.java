@@ -47,7 +47,8 @@ public class TransferServiceTest {
     @Test
     public void testGetMethodWhenAccountExist_Tansfer() {
         when(transferRepository.transferExists(1L)).thenReturn(true);
-        when(transferRepository.get(1L)).thenAnswer(invocation -> new Transfer( 1L, 2L, "GBP", new BigDecimal(1)));
+        when(transferRepository.get(1L)).thenAnswer(
+                invocation -> new Transfer( 1L, 2L, "GBP", new BigDecimal(1)));
         assertEquals(transferService.get(1L), transferDto);
     }
 

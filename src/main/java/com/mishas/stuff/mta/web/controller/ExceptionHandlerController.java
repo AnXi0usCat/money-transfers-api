@@ -25,17 +25,23 @@ public class ExceptionHandlerController implements IController {
         notFound((request, response) -> {
             response.status(404);
             response.type("application/json");
-            return "{\"message\":\"Custom 404\"}";
+            return "{\"message\":\"Not Found\"}";
         });
 
         // 500 series
         internalServerError((request, response) -> {
             response.status(500);
             response.type("application/json");
-            return "{\"message\":\"Custom 500 handling\"}";
+            return "{\"message\":\"Server cannot process the request\"}";
         });
 
         // custom exceptions mappings
+
+        exception(MyInputValidationException.class, (exception, request, response) -> {
+            response.status(400);
+            response.type("application/json");
+            response.body(new Gson().toJson(mapException(exception)));
+        });
 
         exception(MyPersistenceException.class, (exception, request, response) -> {
             response.status(500);
@@ -50,12 +56,6 @@ public class ExceptionHandlerController implements IController {
         });
 
         exception(MyFundsTransferException.class, (exception, request, response) -> {
-            response.status(500);
-            response.type("application/json");
-            response.body(new Gson().toJson(mapException(exception)));
-        });
-
-        exception(MyInputValidationException.class, (exception, request, response) -> {
             response.status(500);
             response.type("application/json");
             response.body(new Gson().toJson(mapException(exception)));

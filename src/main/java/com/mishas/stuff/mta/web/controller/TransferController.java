@@ -9,12 +9,15 @@ import com.mishas.stuff.mta.service.ITransferService;
 import com.mishas.stuff.mta.web.dto.TransferDto;
 import org.eclipse.jetty.http.HttpStatus;
 
+import java.io.Serializable;
+
 import static spark.Spark.*;
 
 public class TransferController  implements IController {
 
     private ITransferService transferService;
     private InputValidator<TransferDto> inputValidator = new InputValidator(TransferDto.class);
+    private static final String LOCATION_PATH = "/api/v1/transfers/";
 
     public TransferController(ITransferService transferService) {
         this.transferService = transferService;
@@ -44,7 +47,10 @@ public class TransferController  implements IController {
             response.status(HttpStatus.CREATED_201);
             TransferDto resource = inputValidator.validatePayload(request.body());
             inputValidator.isPayloadAValidDto(resource);
-            transferService.create(resource);
+            // set location header
+            Serializable locationKey = transferService.create(resource);
+            response.header("Location", LOCATION_PATH + locationKey);
+            // create response payload
             return new Gson()
                     .toJson(new StandardResponse(StatusResponse.SUCCESS,   "CREATED", null));
         });
