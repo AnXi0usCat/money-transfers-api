@@ -49,18 +49,18 @@
             <version>5.3.7.Final</version>
         </dependency>
         <!-- make use of c3p0 connection pool-->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <version>5.3.7.Final</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-c3p0</artifactId>-->
+            <!--<version>5.3.7.Final</version>-->
+        <!--</dependency>-->
 
         <!-- in memory database -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.197</version>
-            <!--<scope>runtime</scope>-->
+            <scope>runtime</scope>
         </dependency>
 
         <!-- testing libraries -->

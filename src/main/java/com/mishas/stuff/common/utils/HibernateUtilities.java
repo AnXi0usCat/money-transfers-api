@@ -35,11 +35,11 @@ public class HibernateUtilities {
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, ConfigPropertiesLoader.getProperty("hibernate_current_session_context_class"));
                 settings.put(Environment.HBM2DDL_AUTO, ConfigPropertiesLoader.getProperty("hibernate_hbm2ddl_auto"));
                 settings.put(Environment.AUTOCOMMIT, ConfigPropertiesLoader.getProperty("hibernate_auto_commit"));
-                // pool size
-                settings.put(Environment.C3P0_MIN_SIZE, ConfigPropertiesLoader.getProperty("c3p0_min_size"));
-                settings.put(Environment.C3P0_MAX_SIZE, ConfigPropertiesLoader.getProperty("c3p0_max_size"));
-                settings.put(Environment.C3P0_TIMEOUT, ConfigPropertiesLoader.getProperty("c3p0_timeout"));
-                settings.put(Environment.C3P0_MAX_STATEMENTS, ConfigPropertiesLoader.getProperty("c3p0_max_statements"));
+//                // pool size
+//                settings.put(Environment.C3P0_MIN_SIZE, ConfigPropertiesLoader.getProperty("c3p0_min_size"));
+//                settings.put(Environment.C3P0_MAX_SIZE, ConfigPropertiesLoader.getProperty("c3p0_max_size"));
+//                settings.put(Environment.C3P0_TIMEOUT, ConfigPropertiesLoader.getProperty("c3p0_timeout"));
+//                settings.put(Environment.C3P0_MAX_STATEMENTS, ConfigPropertiesLoader.getProperty("c3p0_max_statements"));
 
                 configuration.setProperties(settings);
                 // entities
