@@ -34,15 +34,15 @@ import static org.junit.Assert.assertTrue;
 
 public class EndToEndApiTest extends TestHttpClient {
 
-    private static TransferController transferController;
-    private static TransferService transferService;
-    private static TransferRepository transferRepository;
-    private static AccountService accountService;
-    private static AccountRepository accountRepository;
+    private TransferController transferController;
+    private TransferService transferService;
+    private TransferRepository transferRepository;
+    private AccountService accountService;
+    private AccountRepository accountRepository;
     // we need this because it handles exceptions
-    private static ExceptionHandlerController exceptionHandlerController;
+    private  ExceptionHandlerController exceptionHandlerController;
     // we need this to create accounts
-    private static AccountController accountController;
+    private AccountController accountController;
 
 
 
@@ -57,6 +57,7 @@ public class EndToEndApiTest extends TestHttpClient {
         accountController = new AccountController(accountService);
         exceptionHandlerController.setupEndpoints();
         transferController.setupEndpoints();
+        accountController.setupEndpoints();
         Spark.awaitInitialization();
     }
 
@@ -88,8 +89,8 @@ public class EndToEndApiTest extends TestHttpClient {
         String dstLocation = locations[1];
 
         TransferDto transferDto = new TransferDto(
-                Long.parseLong(srcLocation.substring(srcLocation.length()-1)),
-                Long.parseLong(dstLocation.substring(dstLocation.length()-1)),
+                Long.parseLong(srcLocation.substring(srcLocation.lastIndexOf("/") + 1)),
+                Long.parseLong(dstLocation.substring(dstLocation.lastIndexOf("/") + 1)),
                 "EUR",
                 new BigDecimal(100)
         );
@@ -131,28 +132,6 @@ public class EndToEndApiTest extends TestHttpClient {
         assertEquals(200, statusCode);
         assertTrue(convertPayloadToTransferObject(response) != null); // get the transfer object from the database, make sure it exists
 
-    }
-
-    /*
-        create source and destination accounts and returns location list
-     */
-    public String[] createSrcAndDstAccounts(AccountDto srcAccount, AccountDto dstAccount) throws Exception {
-        String[] locationList = new String[2];
-        URI uri = builder.setPath("/api/v1/accounts").build();
-        // create a source account
-        HttpPost requestPost = new HttpPost(uri);
-        requestPost.setHeader("Content-type", "application/json");
-        requestPost.setEntity(convertObjectToPayload(srcAccount));
-        HttpResponse response = httpClient.execute(requestPost);
-        int statusCode = response.getStatusLine().getStatusCode();
-        assertEquals(201, statusCode);
-        locationList[0] = response.getFirstHeader("Location").getValue();
-
-        // create destination
-        requestPost.setEntity(convertObjectToPayload(dstAccount));
-        response = httpClient.execute(requestPost);
-        locationList[1] = response.getFirstHeader("Location").getValue();
-        return locationList;
     }
 
     /*
@@ -204,10 +183,10 @@ public class EndToEndApiTest extends TestHttpClient {
         HttpGet requestGet = new HttpGet(uri);
         response = httpClient.execute(requestGet);
         statusCode = response.getStatusLine().getStatusCode();
-
         AccountDto result = convertPayloadToObject(response);
+
         assertEquals(200, statusCode);
-        assertEquals(location.substring(location.length()-1 ), result.getId().toString());
+        assertEquals(location.substring(location.lastIndexOf("/") + 1), result.getId().toString());
         assertEquals(newAccount.getCurrency(),  result.getCurrency());
         assertEquals(newAccount.getBalance().compareTo(result.getBalance().setScale(4, RoundingMode.HALF_EVEN)), 0);
     }
@@ -360,6 +339,28 @@ public class EndToEndApiTest extends TestHttpClient {
             accountDtoJson = element.getAsJsonObject().get("data").getAsJsonObject();
         }
         return new Gson().fromJson(accountDtoJson, TransferDto.class);
+    }
+
+    /*
+    create source and destination accounts and returns location list
+    */
+    public String[] createSrcAndDstAccounts(AccountDto srcAccount, AccountDto dstAccount) throws Exception {
+        String[] locationList = new String[2];
+        URI uri = builder.setPath("/api/v1/accounts").build();
+        // create a source account
+        HttpPost requestPost = new HttpPost(uri);
+        requestPost.setHeader("Content-type", "application/json");
+        requestPost.setEntity(convertObjectToPayload(srcAccount));
+        HttpResponse response = httpClient.execute(requestPost);
+        int statusCode = response.getStatusLine().getStatusCode();
+        assertEquals(201, statusCode);
+        locationList[0] = response.getFirstHeader("Location").getValue();
+
+        // create destination
+        requestPost.setEntity(convertObjectToPayload(dstAccount));
+        response = httpClient.execute(requestPost);
+        locationList[1] = response.getFirstHeader("Location").getValue();
+        return locationList;
     }
 
 }
