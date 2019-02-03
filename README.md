@@ -50,6 +50,7 @@ Note: when using POST method, the location of created resource can be found in t
 ### Sample JSON for Accounts and Transfer
 ##### Create a Source Account :
 ```sh
+# POST http://localhost:8080/api/v1/accounts
 {
     "currency" = "GBP", 
     "balance": 1000.00
@@ -57,6 +58,7 @@ Note: when using POST method, the location of created resource can be found in t
 ```
 ##### Create a Destination Account :
 ```sh
+# POST http://localhost:8080/api/v1/accounts
 {
     "currency" = "GBP", 
     "balance": 0.00
@@ -64,6 +66,7 @@ Note: when using POST method, the location of created resource can be found in t
 ```
 ##### Transfer funds from Source Account to Destination account
 ```sh
+# POST http://localhost:8080/api/v1/transfers
 {
     "currency": "GBP",
     "balance": 100.00,
@@ -71,3 +74,9 @@ Note: when using POST method, the location of created resource can be found in t
     "destinationAccount":2
 }
 ```
+
+##### Data can be retrieved after with:
+- GET http://localhost:8080/api/v1/transfers/1
+- GET http://localhost:8080/api/v1/accounts/1
+- GET http://localhost:8080/api/v1/accounts/2
+
