@@ -10,17 +10,17 @@ A Java RESTful API for money transfers between accounts
 - Log4j
 - Apache HTTP Client
 
-### How to run tests 
-```sh
-mvn test
-```
-Will run Unit tests, integration tests and end-to-end tests. End-to-end tests will run on the port 4567 by default.
-
 ### Create an JAR file
 
 ```sh
 mvn package
 ```
+
+### How to run tests 
+```sh
+mvn test
+```
+Will run Unit tests, integration tests and end-to-end tests. End-to-end tests will run on the port 4567 by default.
 
 ### How to start application
 ```sh

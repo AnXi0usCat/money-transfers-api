@@ -1,6 +1,6 @@
 package com.mishas.stuff.mta.persistence.model;
 
-import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.mishas.stuff.common.interfaces.IEntity;
 
 import javax.persistence.*;
@@ -14,12 +14,15 @@ public class TransferResult implements IEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @SerializedName("transferId")
     private Long id;
 
     @Column(name = "balance", nullable = false)
+    @SerializedName("sourceAccountCurrentBalance")
     private BigDecimal balance;
 
     @Column(name = "previous_balance", nullable = false)
+    @SerializedName("sourceAccountPreviousBalance")
     private BigDecimal previousBalance;
 
     @Column(name = "transaction_amount", nullable = false)
