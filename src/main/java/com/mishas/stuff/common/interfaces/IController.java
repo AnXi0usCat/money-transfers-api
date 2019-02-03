@@ -1,4 +1,4 @@
-package com.mishas.stuff.common.controller;
+package com.mishas.stuff.common.interfaces;
 
 public interface IController {
 
